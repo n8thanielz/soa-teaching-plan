@@ -634,7 +634,6 @@ document.addEventListener('click',e=>{
     case 'addCourse':{
       const code=normCode(document.getElementById('newCode').value),title=document.getElementById('newTitle').value.trim(),cr=parseFloat(document.getElementById('newCr').value),cat=document.getElementById('newCat').value.trim();
       if(!code){toast('Enter a course code first.');break}
-      if(state.courses.some(c=>c.code===code)){toast(code+' is already in the course list.');break}
       if(!(cr>=0)){toast('Enter credit hours as a number.');break}
       let id=slug(code);while(C(id))id+='x';
       commit(s=>s.courses.push({id,code,title:title||code,credits:cr,category:cat||'Other',active:true,assignable:true}));
@@ -678,7 +677,6 @@ document.addEventListener('change',e=>{
   if(t.classList.contains('cCode')){
     const v=normCode(t.value);
     if(!v){toast('Course codes cannot be blank.');render();return}
-    if(state.courses.some(c=>c.id!==id&&c.code===v)){toast(v+' is already in the course list.');render();return}
     commit(s=>{s.courses.find(c=>c.id===id).code=v});return}
   if(t.classList.contains('cTitle')){commit(s=>{s.courses.find(c=>c.id===id).title=t.value.trim()});return}
   if(t.classList.contains('cCr')){const v=parseFloat(t.value);if(!(v>=0)){toast('Enter credit hours as a number.');render();return}commit(s=>{s.courses.find(c=>c.id===id).credits=v});return}
