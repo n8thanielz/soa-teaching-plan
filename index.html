@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accounting Teaching Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F2F4F1; --surface:#FFFFFF; --ink:#1D2A2E; --muted:#5D6A6D; --faint:#8A9597;
+  --line:#D4DBD7; --line-strong:#B9C3BE;
+  --red:#B3141F; --red-soft:#FBE8E9;
+  --green:#2E6B4E; --green-soft:#E2EFE7;
+  --amber:#9A5B0C; --amber-soft:#FBEFD9;
+  --slate:#2D4A64; --slate-soft:#E3EAF1;
+  --radius:6px;
+  font-family:"Libre Franklin","Segoe UI",system-ui,-apple-system,sans-serif;
+  font-size:15px; color:var(--ink); background:var(--paper);
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--slate);outline-offset:2px}
+.num,td.n,input[type=number]{font-variant-numeric:tabular-nums}
+
+/* header */
+.top{display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:18px 28px 14px;background:var(--surface);border-bottom:1px solid var(--line)}
+.brand h1{margin:0;font-size:1.05rem;font-weight:700;letter-spacing:-.01em}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:.82rem}
+.year{display:flex;align-items:center;gap:4px;margin-right:auto}
+.year select{appearance:none;border:none;background:transparent;font-size:2rem;font-weight:800;letter-spacing:-.03em;padding:0 6px;cursor:pointer;font-variant-numeric:tabular-nums}
+.year select:hover{background:var(--paper);border-radius:var(--radius)}
+.year .step{border:1px solid var(--line);background:var(--surface);width:30px;height:30px;border-radius:50%;font-size:1rem;line-height:1;color:var(--muted)}
+.year .step:hover{border-color:var(--ink);color:var(--ink)}
+.year .ay{color:var(--muted);font-size:.8rem;margin-right:4px}
+.file{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.status{font-size:.8rem;color:var(--muted);margin-right:6px;max-width:260px}
+.status.dirty{color:var(--amber);font-weight:600}
+.btn{border:1px solid var(--line-strong);background:var(--surface);padding:7px 13px;border-radius:var(--radius);font-size:.86rem;font-weight:500}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.primary:hover{background:#000}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.small{padding:4px 9px;font-size:.8rem}
+.btn.danger{color:var(--red)}
+.linkbtn{border:none;background:none;padding:0;color:var(--slate);text-decoration:underline;text-underline-offset:2px;font-size:.84rem}
+
+/* tabs */
+.tabs{display:flex;gap:2px;padding:0 28px;background:var(--surface);border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{border:none;background:none;padding:12px 14px 11px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;font-size:.92rem}
+.tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--ink)}
+.tabs .badge{display:inline-block;min-width:20px;padding:1px 6px;margin-left:6px;border-radius:10px;background:var(--red);color:#fff;font-size:.72rem;text-align:center}
+.tabs .badge.zero{background:var(--green)}
+
+main{padding:22px 28px 60px;max-width:1500px}
+h2{font-size:1.25rem;margin:0 0 4px;letter-spacing:-.01em}
+.lede{color:var(--muted);margin:0 0 18px;font-size:.9rem;max-width:72ch}
+
+/* summary */
+.summary{display:grid;grid-template-columns:repeat(3,1fr) 1.3fr;gap:12px;margin-bottom:20px}
+.sum{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
+.sum h3{margin:0 0 6px;font-size:.82rem;font-weight:600;color:var(--muted)}
+.sum .big{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.sum .big.bad{color:var(--red)} .sum .big.good{color:var(--green)}
+.sum .small{font-size:.8rem;color:var(--muted);margin-top:4px}
+.sum.cap dl{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;margin:0;font-size:.86rem}
+.sum.cap dt{color:var(--muted)} .sum.cap dd{margin:0;font-weight:600;text-align:right}
+.sum.cap dd.bad{color:var(--red)} .sum.cap dd.good{color:var(--green)}
+
+/* assignments layout */
+.alayout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
+.toolbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.toolbar input[type=search],.toolbar input[type=text]{border:1px solid var(--line-strong);border-radius:var(--radius);padding:7px 10px;min-width:220px;background:var(--surface)}
+.toolbar label{font-size:.86rem;display:flex;align-items:center;gap:6px;color:var(--muted)}
+.focusnote{background:var(--slate-soft);color:var(--slate);padding:6px 10px;border-radius:var(--radius);font-size:.84rem}
+.cov{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.crow{display:grid;grid-template-columns:230px repeat(3,minmax(0,1fr));border-top:1px solid var(--line)}
+.crow.head{border-top:none;position:sticky;top:0;background:var(--surface);z-index:2;font-size:.8rem;font-weight:600;color:var(--muted);border-bottom:1px solid var(--line-strong)}
+.crow.head>div{padding:9px 12px}
+.cat{padding:14px 12px 6px;font-size:.78rem;font-weight:700;color:var(--muted);border-top:1px solid var(--line);background:var(--paper)}
+.cname{padding:10px 12px;border-right:1px solid var(--line)}
+.cname b{display:block;font-size:.92rem}
+.cname span{display:block;font-size:.78rem;color:var(--muted);line-height:1.3;margin-top:1px}
+.cname .cr{color:var(--faint)}
+.cell{padding:8px 10px;border-right:1px solid var(--line);display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;position:relative;min-height:46px}
+.cell:last-child{border-right:none}
+.cell .count{position:absolute;right:6px;bottom:3px;font-size:.68rem;color:var(--faint);font-variant-numeric:tabular-nums}
+.cell .none{font-size:.76rem;color:var(--faint);padding:4px 0}
+.crow.flash{animation:flash 1.6s ease-out}
+@keyframes flash{0%{background:var(--slate-soft)}100%{background:transparent}}
+.chip{border:1px solid var(--ink);background:var(--ink);color:#fff;border-radius:4px;padding:3px 8px;font-size:.8rem;font-weight:500;line-height:1.3;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip:hover{background:#000}
+.chip.inactive{background:#6c6c6c;border-color:#6c6c6c}
+.chip sup{font-size:.62rem;margin-left:3px;opacity:.85}
+.chip.over{background:var(--amber-soft);color:var(--amber);border-color:var(--amber)}
+.chip.open{background:var(--red-soft);color:var(--red);border:1px dashed var(--red);font-weight:600}
+.chip.open:hover{background:#f7d4d6}
+.chip.dim{opacity:.22}
+.addbtn{border:1px dashed var(--line-strong);background:none;color:var(--faint);border-radius:4px;width:26px;height:24px;font-size:.95rem;line-height:1;padding:0}
+.addbtn:hover{border-color:var(--ink);color:var(--ink)}
+
+/* load sidebar */
+.loads{position:sticky;top:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);max-height:calc(100vh - 24px);overflow:auto}
+.loads h3{margin:0;padding:12px 14px 4px;font-size:.95rem}
+.loads p{margin:0;padding:0 14px 10px;font-size:.78rem;color:var(--muted)}
+.lrow{display:block;width:100%;text-align:left;border:none;border-top:1px solid var(--line);background:none;padding:8px 14px}
+.lrow:hover{background:var(--paper)}
+.lrow[aria-pressed=true]{background:var(--slate-soft)}
+.lrow .l1{display:flex;justify-content:space-between;gap:8px;font-size:.86rem}
+.lrow .l1 b{font-weight:600}
+.lrow .l1 .num{font-weight:600}
+.bar{height:5px;background:var(--paper);border-radius:3px;margin-top:5px;overflow:hidden;display:flex}
+.bar i{display:block;height:100%;background:var(--slate)}
+.lrow.over .bar i{background:var(--amber)} .lrow.at .bar i{background:var(--green)}
+.lrow.over .num{color:var(--amber)}
+.lrow.over .l2{color:var(--amber);font-weight:600}
+.olabel{display:block;font-size:.68rem;font-weight:600} .lrow.at .num{color:var(--green)}
+.lrow .l2{font-size:.74rem;color:var(--muted);margin-top:3px}
+
+/* picker */
+.picker[hidden]{display:none}
+.picker{position:fixed;z-index:50;width:340px;max-height:430px;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line-strong);border-radius:8px;box-shadow:0 10px 30px rgba(29,42,46,.18)}
+.picker header{padding:12px 14px 8px;border-bottom:1px solid var(--line)}
+.picker header b{display:block;font-size:.95rem}
+.picker header span{font-size:.78rem;color:var(--muted)}
+.picker input[type=search]{width:100%;margin-top:8px;border:1px solid var(--line-strong);border-radius:var(--radius);padding:6px 9px}
+.plist{overflow:auto;flex:1}
+.pitem{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;border:none;border-bottom:1px solid var(--line);background:none;padding:8px 14px;font-size:.86rem}
+.pitem:hover,.pitem:focus-visible{background:var(--paper)}
+.pitem.current{background:var(--slate-soft)}
+.pitem .tag{font-size:.7rem;color:var(--green);background:var(--green-soft);border-radius:3px;padding:1px 5px;margin-left:6px;font-weight:600}
+.pitem .ld{font-size:.78rem;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.pitem .ld.over{color:var(--amber);font-weight:600}
+.picker footer{padding:10px 14px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;font-size:.82rem}
+.picker footer label{display:flex;align-items:center;gap:6px;color:var(--muted)}
+.picker footer input[type=number]{width:62px;border:1px solid var(--line-strong);border-radius:4px;padding:3px 6px}
+.pempty{padding:14px;color:var(--muted);font-size:.85rem}
+
+/* tables */
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{font-size:.78rem;color:var(--muted);font-weight:600;background:var(--surface);position:sticky;top:0;z-index:1}
+td.n,th.n{text-align:right}
+tr.cat td{background:var(--paper);font-size:.76rem;font-weight:700;color:var(--muted);padding-top:12px}
+tr.total td{font-weight:700;border-top:2px solid var(--line-strong)}
+tr.inactive td{color:var(--faint)}
+td input[type=text],td input[type=number],td select{border:1px solid transparent;background:transparent;border-radius:4px;padding:4px 6px;width:100%}
+td input:hover,td select:hover{border-color:var(--line)}
+td input:focus,td select:focus{border-color:var(--slate);background:#fff;outline:none}
+.plan td input[type=number]{width:52px;text-align:right}
+.plan th.ay{text-align:center;border-left:2px solid var(--line-strong);font-size:.82rem;color:var(--ink)}
+.plan th.ay.sel,.plan td.sel{background:#F7F9F6}
+.plan .ys{border-left:2px solid var(--line-strong)}
+.plan td.code{white-space:nowrap;font-weight:600}
+.plan td.title{color:var(--muted);min-width:200px}
+.plan td input.filled{font-weight:700}
+.fac td.code{white-space:nowrap}
+.fac .clist{font-size:.78rem;color:var(--muted);min-width:120px}
+.diff.over{color:var(--amber);font-weight:600} .diff.under{color:var(--slate);font-weight:600} .diff.at{color:var(--green);font-weight:600}
+.addform{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.addform input,.addform select{border:1px solid var(--line-strong);border-radius:var(--radius);padding:7px 10px;background:var(--surface)}
+
+/* checks */
+.checks section{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:14px}
+.checks h3{margin:0;padding:12px 14px;font-size:.95rem;display:flex;gap:10px;align-items:center;border-bottom:1px solid var(--line)}
+.checks h3 .pill{font-size:.72rem;border-radius:10px;padding:1px 8px;font-weight:700}
+.pill.problem{background:var(--red-soft);color:var(--red)} .pill.info{background:var(--slate-soft);color:var(--slate)}
+.checks ul{list-style:none;margin:0;padding:0}
+.checks li{display:flex;justify-content:space-between;gap:12px;padding:8px 14px;border-bottom:1px solid var(--line);font-size:.87rem}
+.checks li:last-child{border-bottom:none}
+.allclear{background:var(--green-soft);color:var(--green);padding:16px;border-radius:var(--radius);font-weight:600}
+
+.welcome{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px 30px;max-width:680px}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:var(--radius);font-size:.88rem;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;z-index:60}
+#toast.show{opacity:1}
+
+@media (max-width:1100px){.alayout{grid-template-columns:1fr}.loads{position:static;max-height:none}.summary{grid-template-columns:1fr 1fr}}
+@media (max-width:700px){
+  .top,.tabs,main{padding-left:14px;padding-right:14px}
+  .crow{grid-template-columns:1fr}.crow.head{display:none}
+  .cname{border-right:none}.cell{border-right:none;border-top:1px dashed var(--line)}
+  .cell::before{content:attr(data-label);font-size:.72rem;color:var(--muted);width:100%}
+  .summary{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><h1>Accounting Teaching Plan</h1><p>School of Accounting, Eccles School of Business</p></div>
+  <div class="year">
+    <span class="ay">Academic year</span>
+    <button class="step" data-act="prevYear" aria-label="Previous academic year">&#8249;</button>
+    <select id="yearSel" aria-label="Academic year"></select>
+    <button class="step" data-act="nextYear" aria-label="Next academic year">&#8250;</button>
+  </div>
+  <div class="file">
+    <span class="status" id="status"></span>
+    <button class="btn" data-act="undo" id="undoBtn" title="Undo (Ctrl+Z)">Undo</button>
+    <button class="btn" data-act="open">Open file</button>
+    <button class="btn" data-act="saveAs">Save as</button>
+    <button class="btn primary" data-act="save">Save</button>
+    <button class="btn" data-act="export">Export to Excel</button>
+  </div>
+</header>
+<nav class="tabs" id="tabs" role="tablist"></nav>
+<main id="view"></main>
+<div class="picker" id="picker" hidden role="dialog" aria-label="Choose instructor"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="fileInput" accept=".json,application/json" hidden>
+
+<script>
+const SEED = /*SEED*/null;
+const STORE_KEY='acctgTeachingPlan.v1', UI_KEY='acctgTeachingPlan.ui';
+const TRACKS={'':'Not set',career:'Career-line',tenure:'Tenure-track',adjunct:'Adjunct',phd:'PhD student',other:'Other'};
+const TRACK_DEFAULT={career:24,tenure:9};
+const TABS=[['assign','Assignments'],['plan','Section plan'],['faculty','Faculty'],['courses','Courses'],['checks','Checks']];
+
+let state, ui, dirty=false, fileHandle=null, fileName='', lastSaved=null, undoStack=[];
+
+/* ---------- helpers ---------- */
+const clone=o=>JSON.parse(JSON.stringify(o));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const p2=n=>String(n).padStart(2,'0');
+const termsOf=y=>{const a=+y.slice(0,4)%100,b=(a+1)%100;return['FA'+p2(a),'SP'+p2(b),'SU'+p2(b)]};
+const yearOf=t=>{const n=2000+ +t.slice(2);const s=t.startsWith('FA')?n:n-1;return s+'-'+p2((s+1)%100)};
+const season=t=>({FA:'Fall',SP:'Spring',SU:'Summer'})[t.slice(0,2)];
+const termLabel=t=>season(t)+' 20'+t.slice(2);
+const fmt=n=>n==null?'':(Math.round(n*10)/10).toString();
+const C=id=>state.courses.find(c=>c.id===id);
+const F=id=>state.faculty.find(f=>f.id===id);
+const surname=n=>n.includes(',')?n.split(',')[0]:n;
+const credit=a=>a.credits!=null?a.credits:(C(a.courseId)?.credits??0);
+const contractOf=(f,y)=>{const v=f.contracts?.[y];return v==null||v===''?null:+v};
+const asgIn=y=>{const T=termsOf(y);return state.assignments.filter(a=>T.includes(a.term))};
+const loadOf=(fid,y)=>asgIn(y).filter(a=>a.facultyId===fid).reduce((s,a)=>s+credit(a),0);
+const need=(cid,t)=>state.needs[cid]?.[t]||0;
+const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const slug=s=>s.toLowerCase().replace(/[^a-z0-9]/g,'');
+const normCode=s=>s.trim().toUpperCase().replace(/\s+/g,' ');
+
+function currentAY(){const d=new Date(),y=d.getFullYear(),start=d.getMonth()>=7?y:y-1;return start+'-'+p2((start+1)%100)}
+function defaultYear(){const ay=currentAY();return state.years.includes(ay)?ay:state.years[state.years.length-1]}
+function blankState(){const ay=currentAY(),s=+ay.slice(0,4)+1;return{version:2,years:[ay,s+'-'+p2((s+1)%100)],courses:[],faculty:[],needs:{},assignments:[]}}
+const isBlank=()=>!state.courses.length&&!state.faculty.length&&!state.assignments.length;
+function toast(msg,ms=2800){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),ms)}
+
+/* ---------- persistence ---------- */
+function persist(){
+  try{localStorage.setItem(STORE_KEY,JSON.stringify({state,dirty,fileName,lastSaved}))}catch(e){}
+  try{localStorage.setItem(UI_KEY,JSON.stringify({year:ui.year,tab:ui.tab}))}catch(e){}
+}
+function load(){
+  let saved=null;
+  try{saved=JSON.parse(localStorage.getItem(STORE_KEY)||'null')}catch(e){}
+  if(saved&&saved.state){state=migrate(saved.state);dirty=!!saved.dirty;fileName=saved.fileName||'';lastSaved=saved.lastSaved||null}
+  else if(SEED){state=migrate(clone(SEED));dirty=true}
+  else{state=blankState();dirty=false}
+  let u={};try{u=JSON.parse(localStorage.getItem(UI_KEY)||'{}')}catch(e){}
+  ui={tab:u.tab||'assign',year:state.years.includes(u.year)?u.year:null,q:'',onlyOpen:false,focus:null,showInactive:false,planPast:false,picker:null};
+  if(!ui.year)ui.year=defaultYear();
+}
+function commit(fn,{keepPicker=false}={}){
+  undoStack.push(JSON.stringify(state));if(undoStack.length>80)undoStack.shift();
+  fn(state);dirty=true;persist();if(!keepPicker)closePicker();render();
+}
+function undo(){
+  if(!undoStack.length){toast('Nothing to undo');return}
+  state=JSON.parse(undoStack.pop());dirty=true;
+  if(!state.years.includes(ui.year))ui.year=state.years[state.years.length-1];
+  persist();closePicker();render();toast('Undone');
+}
+
+function migrate(st){
+  if((st.version||1)<2){
+    const c=st.courses.find(c=>c.id==='acctg6910');
+    if(c){if(/^Unknown/.test(c.title))c.title='Special Topics';c.variable=true;c.credits=3;c.category=st.courses.find(x=>x.id==='acctg6540')?.category||c.category;
+      st.needs.acctg6910??={};if(!st.needs.acctg6910.SP27)st.needs.acctg6910.SP27=1;}
+    const m=st.courses.find(c=>c.id==='mbao6910');if(m)m.variable=true;
+    st.version=2;
+  }
+  return st;
+}
+/* file handle memory (IndexedDB) */
+function idb(){return new Promise((res,rej)=>{const r=indexedDB.open('acctgTeachingPlan',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function idbSet(k,v){try{const db=await idb();db.transaction('kv','readwrite').objectStore('kv').put(v,k)}catch(e){}}
+async function idbGet(k){try{const db=await idb();return await new Promise(r=>{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)})}catch(e){return null}}
+
+function validData(d){return d&&Array.isArray(d.courses)&&Array.isArray(d.faculty)&&Array.isArray(d.assignments)&&Array.isArray(d.years)&&typeof d.needs==='object'}
+async function save(asNew=false){
+  const json=JSON.stringify(state,null,1);
+  if(window.showSaveFilePicker){
+    try{
+      if(!fileHandle||asNew){
+        fileHandle=await showSaveFilePicker({suggestedName:fileName||'ACCTG_teaching_plan.json',types:[{description:'Teaching plan',accept:{'application/json':['.json']}}]});
+        idbSet('handle',fileHandle);
+      }
+      if(fileHandle.queryPermission&&(await fileHandle.queryPermission({mode:'readwrite'}))!=='granted'){
+        if((await fileHandle.requestPermission({mode:'readwrite'}))!=='granted'){toast('Save cancelled. The browser needs permission to write the file.');return}
+      }
+      const w=await fileHandle.createWritable();await w.write(json);await w.close();
+      fileName=fileHandle.name;
+    }catch(e){if(e.name==='AbortError')return;toast('Could not save: '+e.message,4500);return}
+  }else{
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([json],{type:'application/json'}));
+    a.download=fileName||'ACCTG_teaching_plan.json';a.click();URL.revokeObjectURL(a.href);
+    fileName=a.download;
+  }
+  dirty=false;lastSaved=new Date().toISOString();persist();renderStatus();toast('Saved to '+fileName);
+}
+async function openFile(){
+  if(dirty&&!isBlank()&&!confirm('You have changes that are not saved to a file. Open another file anyway?'))return;
+  if(window.showOpenFilePicker){
+    try{
+      const[h]=await showOpenFilePicker({types:[{description:'Teaching plan',accept:{'application/json':['.json']}}]});
+      const d=JSON.parse(await (await h.getFile()).text());
+      if(!validData(d)){toast('That file is not a teaching plan file.',4000);return}
+      fileHandle=h;fileName=h.name;idbSet('handle',h);loadData(d);
+    }catch(e){if(e.name!=='AbortError')toast('Could not open: '+e.message,4500)}
+  }else document.getElementById('fileInput').click();
+}
+function loadData(d){
+  state=migrate(d);undoStack=[];dirty=false;lastSaved=null;
+  if(!state.years.includes(ui.year))ui.year=defaultYear();
+  persist();closePicker();render();toast('Opened '+fileName);
+}
+document.getElementById('fileInput').addEventListener('change',async e=>{
+  const f=e.target.files[0];if(!f)return;
+  try{const d=JSON.parse(await f.text());if(!validData(d)){toast('That file is not a teaching plan file.',4000);return}fileHandle=null;fileName=f.name;loadData(d)}
+  catch(err){toast('Could not read that file.',4000)}
+  e.target.value='';
+});
+window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});
+
+/* ---------- derived data ---------- */
+function byCat(list){const order=[];state.courses.forEach(c=>{if(!order.includes(c.category))order.push(c.category)});return[...list].sort((a,b)=>order.indexOf(a.category)-order.indexOf(b.category))}
+function visibleCourses(y){
+  const T=termsOf(y),used=new Set(asgIn(y).map(a=>a.courseId));
+  return byCat(state.courses.filter(c=>c.assignable!==false&&(c.active||used.has(c.id)||T.some(t=>need(c.id,t)>0))));
+}
+function cellMap(y){const m={};asgIn(y).forEach(a=>{(m[a.courseId+'|'+a.term]??=[]).push(a)});return m}
+function taughtCount(fid,cid,exceptTerm){return state.assignments.filter(a=>a.facultyId===fid&&a.courseId===cid&&a.term!==exceptTerm).length}
+
+function computeChecks(y){
+  const T=termsOf(y),m=cellMap(y),out={open:[],over:[],overload:[],inactive:[],under:[],nocontract:[],override:[]};
+  visibleCourses(y).forEach(c=>T.forEach(t=>{
+    const n=need(c.id,t),a=(m[c.id+'|'+t]||[]).length;
+    if(n>a)out.open.push({c,t,n:n-a});
+    if(a>n)out.over.push({c,t,n:a-n,planned:n});
+  }));
+  const fids=new Set(asgIn(y).map(a=>a.facultyId));
+  state.faculty.forEach(f=>{
+    const ld=loadOf(f.id,y),con=contractOf(f,y);
+    if(con!=null&&ld>con)out.overload.push({f,ld,con});
+    else if(con!=null&&con>0&&ld<con&&f.active)out.under.push({f,ld,con});
+    if(con==null&&fids.has(f.id))out.nocontract.push({f,ld});
+    if(!f.active&&fids.has(f.id))out.inactive.push({kind:'fac',f});
+  });
+  const seen=new Set();
+  asgIn(y).forEach(a=>{
+    const c=C(a.courseId);
+    if(c&&!c.active&&!seen.has(c.id)&&!T.some(t=>need(c.id,t)>0)){seen.add(c.id);out.inactive.push({kind:'course',c})}
+    if(a.credits!=null&&!c?.variable)out.override.push({a,c,f:F(a.facultyId)});
+  });
+  out.problems=out.open.length+out.over.length+out.inactive.length;
+  return out;
+}
+
+/* ---------- render ---------- */
+function render(){renderHeader();renderTabs();({assign:viewAssign,plan:viewPlan,faculty:viewFaculty,courses:viewCourses,checks:viewChecks})[ui.tab]();}
+function renderStatus(){
+  const s=document.getElementById('status');
+  if(dirty){s.className='status dirty';s.textContent=fileName?'Unsaved changes to '+fileName:'Not saved to a file yet';s.title='Your work is kept in this browser automatically. Save writes it to your plan file so it is backed up.'}
+  else{s.className='status';s.textContent=fileName?(lastSaved?'Saved to '+fileName+' at '+new Date(lastSaved).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}):'Up to date with '+fileName):'';s.title=''}
+  document.getElementById('undoBtn').disabled=!undoStack.length;
+}
+function renderHeader(){
+  const sel=document.getElementById('yearSel');
+  sel.innerHTML=state.years.map(y=>`<option value="${y}"${y===ui.year?' selected':''}>${y}</option>`).join('');
+  renderStatus();
+}
+function renderTabs(){
+  const n=computeChecks(ui.year).problems;
+  document.getElementById('tabs').innerHTML=TABS.map(([k,l])=>`<button role="tab" data-tab="${k}" aria-selected="${ui.tab===k}">${l}${k==='checks'?`<span class="badge${n?'':' zero'}">${n}</span>`:''}</button>`).join('');
+}
+
+function viewAssign(){
+  const y=ui.year,T=termsOf(y),m=cellMap(y),courses=visibleCourses(y),A=asgIn(y);
+  // summary
+  const sums=T.map(t=>{let nd=0,op=0,ex=0;courses.forEach(c=>{const n=need(c.id,t),a=(m[c.id+'|'+t]||[]).length;nd+=n;op+=Math.max(0,n-a);ex+=Math.max(0,a-n)});return{t,nd,op,ex}});
+  const chNeed=courses.reduce((s,c)=>s+T.reduce((x,t)=>x+need(c.id,t)*c.credits,0),0);
+  const chAsg=A.reduce((s,a)=>s+credit(a),0);
+  const chCon=state.faculty.reduce((s,f)=>s+(contractOf(f,y)||0),0);
+  const gapCH=courses.reduce((s,c)=>s+T.reduce((x,t)=>x+Math.max(0,need(c.id,t)-(m[c.id+'|'+t]||[]).length)*c.credits,0),0);
+  if(isBlank()){document.getElementById('view').innerHTML=`<div class="welcome"><h2>Open your plan file to get started</h2>
+    <p class="lede">This page doesn't store any faculty or schedule data. Your plan lives in a .json file you keep somewhere safe, like Box or OneDrive. Open it here and your last-used file will be remembered in this browser.</p>
+    <button class="btn primary" data-act="open">Open plan file</button>
+    <p class="lede" style="margin-top:18px">Starting from scratch instead? Add courses on the Courses tab, people on the Faculty tab, and section counts on the Section plan tab, then click Save to create your plan file.</p></div>`;return}
+  let h=`<div class="summary">`+sums.map(s=>`<div class="sum"><h3>${termLabel(s.t)}</h3>
+    <div class="big ${s.op?'bad':'good'}">${s.op?s.op+' open':'Fully staffed'}</div>
+    <div class="small">${s.nd} sections planned${s.ex?`, ${s.ex} beyond plan`:''}</div></div>`).join('')+
+    `<div class="sum cap"><h3>Credit hours for ${y}</h3><dl>
+     <dt>Needed by the section plan</dt><dd>${fmt(chNeed)}</dd>
+     <dt>Under faculty contracts</dt><dd>${fmt(chCon)}</dd>
+     <dt>Assigned so far</dt><dd>${fmt(chAsg)}</dd>
+     <dt>Still unassigned</dt><dd class="${gapCH?'bad':'good'}">${fmt(gapCH)}</dd></dl></div></div>`;
+  // toolbar
+  const ff=ui.focus&&F(ui.focus);
+  h+=`<div class="alayout"><div><div class="toolbar">
+    <input type="search" id="q" placeholder="Filter by course or instructor" value="${esc(ui.q)}" aria-label="Filter">
+    <label><input type="checkbox" id="onlyOpen"${ui.onlyOpen?' checked':''}> Only courses with open sections</label>
+    ${ff?`<span class="focusnote">Highlighting ${esc(ff.name)} <button class="linkbtn" data-act="clearFocus">Clear</button></span>`:''}
+  </div><div class="cov"><div class="crow head"><div>Course</div>${T.map(t=>`<div>${termLabel(t)}</div>`).join('')}</div>`;
+  const q=ui.q.trim().toLowerCase();
+  let lastCat=null,shown=0;
+  courses.forEach(c=>{
+    const cells=T.map(t=>({t,n:need(c.id,t),list:m[c.id+'|'+t]||[]}));
+    if(ui.onlyOpen&&!cells.some(x=>x.n>x.list.length))return;
+    if(q){const hay=(c.code+' '+c.title+' '+cells.flatMap(x=>x.list.map(a=>F(a.facultyId)?.name||'')).join(' ')).toLowerCase();if(!hay.includes(q))return}
+    if(c.category!==lastCat){h+=`<div class="cat">${esc(c.category||'Other')}</div>`;lastCat=c.category}
+    shown++;
+    h+=`<div class="crow" id="row-${c.id}"><div class="cname"><b>${esc(c.code)}</b><span>${esc(c.title)} <span class="cr">${c.variable?'Variable, usually '+fmt(c.credits):fmt(c.credits)} cr</span></span></div>`;
+    cells.forEach(({t,n,list})=>{
+      h+=`<div class="cell" data-label="${termLabel(t)}">`;
+      list.forEach((a,i)=>{
+        const f=F(a.facultyId),dim=ui.focus&&a.facultyId!==ui.focus?' dim':'';
+        const cls=(i>=n?' over':'')+(f&&!f.active?' inactive':'')+dim;
+        h+=`<button class="chip${cls}" data-act="editAsg" data-id="${a.id}" title="${esc(f?.name||'Unknown')}${i>=n?' (beyond the section plan)':''}">${esc(surname(f?.name||'?'))}${a.credits!=null?`<sup>${fmt(a.credits)}cr</sup>`:''}</button>`;
+      });
+      for(let i=list.length;i<n;i++)h+=`<button class="chip open${ui.focus?' dim':''}" data-act="fillSlot" data-c="${c.id}" data-t="${t}">Open</button>`;
+      if(!n&&!list.length)h+=`<span class="none">Not offered</span>`;
+      h+=`<button class="addbtn" data-act="addAsg" data-c="${c.id}" data-t="${t}" aria-label="Add a section of ${esc(c.code)} in ${termLabel(t)}" title="Add a section beyond the plan">+</button>`;
+      h+=`<span class="count">${list.length}/${n}</span></div>`;
+    });
+    h+=`</div>`;
+  });
+  if(!shown)h+=`<div class="pempty">${ui.onlyOpen?'No open sections. Every planned section has an instructor.':'No courses match that filter.'}</div>`;
+  h+=`</div></div>`;
+  // loads
+  const fl=state.faculty.filter(f=>f.active||A.some(a=>a.facultyId===f.id)).sort((a,b)=>a.name.localeCompare(b.name));
+  h+=`<aside class="loads"><h3>Faculty load</h3><p>Assigned credit hours against each contract. Overload shows in gold. Select a name to highlight their sections.</p>`;
+  fl.forEach(f=>{
+    const ld=loadOf(f.id,y),con=contractOf(f,y);
+    const st=con==null?'':ld>con?'over':ld===con?'at':'under';
+    const pct=con?Math.min(100,ld/con*100):(ld?100:0);
+    const note=con===0&&!ld?'No teaching this year':con==null?(ld?'No contract entered':'No contract, nothing assigned'):ld>con?`Overload: ${fmt(ld-con)} credit hours`:ld<con?`${fmt(con-ld)} still to assign`:'At contract';
+    h+=`<button class="lrow ${st}" data-act="focusFac" data-id="${f.id}" aria-pressed="${ui.focus===f.id}">
+      <span class="l1"><b>${esc(f.name)}</b><span class="num">${fmt(ld)}${con!=null?' / '+fmt(con):''}</span></span>
+      <span class="bar"><i style="width:${pct}%"></i></span><span class="l2">${note}</span></button>`;
+  });
+  h+=`</aside></div>`;
+  document.getElementById('view').innerHTML=h;
+}
+
+function viewPlan(){
+  const yi=state.years.indexOf(ui.year);
+  const years=ui.planPast?state.years:state.years.filter((y,i)=>i>=yi-1);
+  const terms=years.flatMap(termsOf);
+  const courses=byCat(state.courses.filter(c=>ui.showInactive||c.active||terms.some(t=>need(c.id,t)>0)));
+  const nextY=(()=>{const l=state.years[state.years.length-1];const s=+l.slice(0,4)+1;return s+'-'+p2((s+1)%100)})();
+  let h=`<h2>Section plan</h2><p class="lede">How many sections of each course you expect to offer each term. This is the forecast the Assignments tab staffs against. Blank means none.</p>
+  <div class="toolbar"><label><input type="checkbox" id="planPast"${ui.planPast?' checked':''}> Show all past years</label>
+  <label><input type="checkbox" id="showInactive"${ui.showInactive?' checked':''}> Show inactive courses</label>
+  <button class="btn small" data-act="addYear">Add ${nextY}</button></div>
+  <div class="tablewrap"><table class="plan"><thead><tr><th rowspan="2">Course</th><th rowspan="2">Title</th><th rowspan="2" class="n">Cr</th>`;
+  years.forEach(y=>{const i=state.years.indexOf(y);h+=`<th colspan="3" class="ay${y===ui.year?' sel':''}">${y}${i>0?` <button class="linkbtn" data-act="copyYear" data-y="${y}" title="Fill blank cells in ${y} with the counts from ${state.years[i-1]}">copy ${state.years[i-1]}</button>`:''}</th>`});
+  h+=`</tr><tr>`+terms.map((t,i)=>`<th class="n${i%3===0?' ys':''}${yearOf(t)===ui.year?' sel':''}">${season(t)}</th>`).join('')+`</tr></thead><tbody>`;
+  let lastCat=null;
+  courses.forEach(c=>{
+    if(c.category!==lastCat){h+=`<tr class="cat"><td colspan="${3+terms.length}">${esc(c.category||'Other')}</td></tr>`;lastCat=c.category}
+    h+=`<tr class="${c.active?'':'inactive'}"><td class="code">${esc(c.code)}</td><td class="title">${esc(c.title)}</td><td class="n">${fmt(c.credits)}</td>`;
+    terms.forEach((t,i)=>{const v=need(c.id,t);h+=`<td class="n${i%3===0?' ys':''}${yearOf(t)===ui.year?' sel':''}"><input type="number" min="0" step="1" class="needIn${v?' filled':''}" data-c="${c.id}" data-t="${t}" value="${v||''}" aria-label="${esc(c.code)} ${termLabel(t)}"></td>`});
+    h+=`</tr>`;
+  });
+  const cs=state.courses;
+  h+=`<tr class="total"><td colspan="3">Sections</td>`+terms.map((t,i)=>`<td class="n${i%3===0?' ys':''}">${cs.reduce((s,c)=>s+need(c.id,t),0)}</td>`).join('')+`</tr>`;
+  h+=`<tr class="total"><td colspan="3">Credit hours (staffed courses)</td>`+terms.map((t,i)=>`<td class="n${i%3===0?' ys':''}">${fmt(cs.filter(c=>c.assignable!==false).reduce((s,c)=>s+need(c.id,t)*c.credits,0))}</td>`).join('')+`</tr>`;
+  h+=`<tr class="total"><td colspan="3">Academic year credit hours</td>`+years.map(y=>`<td colspan="3" class="n ys">${fmt(termsOf(y).reduce((x,t)=>x+cs.filter(c=>c.assignable!==false).reduce((s,c)=>s+need(c.id,t)*c.credits,0),0))}</td>`).join('')+`</tr>`;
+  h+=`</tbody></table></div>`;
+  document.getElementById('view').innerHTML=h;
+}
+
+function viewFaculty(){
+  const y=ui.year,T=termsOf(y),A=asgIn(y);
+  const list=state.faculty.filter(f=>ui.showInactive||f.active||A.some(a=>a.facultyId===f.id)).sort((a,b)=>a.name.localeCompare(b.name));
+  let h=`<h2>Faculty for ${y}</h2><p class="lede">Enter each contract as written, with any course release already taken out. Every course assigned counts toward it, summer included. Renaming someone here updates them everywhere.</p>
+  <div class="addform"><input type="text" id="newFacName" placeholder="Last, First" aria-label="New faculty name">
+  <select id="newFacTrack" aria-label="Track">${Object.entries(TRACKS).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select>
+  <button class="btn" data-act="addFac">Add person</button>
+  <label style="margin-left:auto;font-size:.86rem;color:var(--muted);display:flex;gap:6px;align-items:center"><input type="checkbox" id="showInactive"${ui.showInactive?' checked':''}> Show inactive</label></div>
+  <div class="tablewrap"><table class="fac"><thead><tr><th>Name</th><th>Track</th><th class="n">Contract</th><th class="n">Assigned</th><th class="n">Difference</th>${T.map(t=>`<th>${termLabel(t)}</th>`).join('')}<th></th></tr></thead><tbody>`;
+  list.forEach(f=>{
+    const ld=loadOf(f.id,y),con=contractOf(f,y),d=con==null?null:ld-con;
+    const used=state.assignments.some(a=>a.facultyId===f.id);
+    h+=`<tr class="${f.active?'':'inactive'}"><td><input type="text" class="facName" data-id="${f.id}" value="${esc(f.name)}" aria-label="Name"></td>
+    <td><select class="facTrack" data-id="${f.id}" aria-label="Track">${Object.entries(TRACKS).map(([k,v])=>`<option value="${k}"${(f.track||'')===k?' selected':''}>${v}</option>`).join('')}</select></td>
+    <td class="n"><input type="number" min="0" step="0.5" class="facCon" data-id="${f.id}" value="${con??''}" placeholder="${TRACK_DEFAULT[f.track]??''}" style="width:70px;text-align:right" aria-label="Contract credit hours for ${y}"></td>
+    <td class="n">${fmt(ld)}</td><td class="n diff ${d==null?'':d>0?'over':d<0?'under':'at'}">${d==null?'':d>0?'+'+fmt(d)+'<span class="olabel">overload</span>':fmt(d)}</td>`;
+    T.forEach(t=>{const cs=A.filter(a=>a.facultyId===f.id&&a.term===t).map(a=>C(a.courseId)?.code||'?');h+=`<td class="clist">${cs.length?esc(summarize(cs)):''}</td>`});
+    h+=`<td style="white-space:nowrap"><button class="btn small" data-act="copySummary" data-id="${f.id}">Copy summary</button>
+    <button class="btn small" data-act="toggleFac" data-id="${f.id}">${f.active?'Deactivate':'Reactivate'}</button>
+    ${used?'':`<button class="btn small danger" data-act="delFac" data-id="${f.id}">Delete</button>`}</td></tr>`;
+  });
+  const tc=list.reduce((s,f)=>s+(contractOf(f,y)||0),0),tl=list.reduce((s,f)=>s+loadOf(f.id,y),0);
+  h+=`<tr class="total"><td colspan="2">Total</td><td class="n">${fmt(tc)}</td><td class="n">${fmt(tl)}</td><td class="n">${fmt(tl-tc)}</td><td colspan="${T.length+1}"></td></tr></tbody></table></div>`;
+  document.getElementById('view').innerHTML=h;
+}
+function summarize(codes){const m={};codes.forEach(c=>m[c]=(m[c]||0)+1);return Object.entries(m).map(([c,n])=>n>1?`${c} (${n})`:c).join(', ')}
+
+function viewCourses(){
+  const cats=[...new Set(state.courses.map(c=>c.category).filter(Boolean))];
+  let h=`<h2>Courses</h2><p class="lede">The one list every other screen pulls from, so a course code only ever gets typed here. Credit hours set here drive every load calculation. Turn off "Staff it" for courses that get a section count but no instructor, like honors theses. Mark special topics as variable credit and set the hours on each section when you assign it.</p>
+  <datalist id="cats">${cats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist>
+  <div class="addform"><input type="text" id="newCode" placeholder="ACCTG 6xxx" aria-label="Course code" style="width:130px">
+  <input type="text" id="newTitle" placeholder="Title" aria-label="Course title" style="min-width:240px">
+  <input type="number" id="newCr" placeholder="Cr" value="3" step="0.5" min="0" aria-label="Credit hours" style="width:70px">
+  <input type="text" id="newCat" list="cats" placeholder="Group" aria-label="Group" style="width:140px">
+  <button class="btn" data-act="addCourse">Add course</button>
+  <label style="margin-left:auto;font-size:.86rem;color:var(--muted);display:flex;gap:6px;align-items:center"><input type="checkbox" id="showInactive"${ui.showInactive?' checked':''}> Show inactive</label></div>
+  <div class="tablewrap"><table><thead><tr><th>Code</th><th>Title</th><th class="n">Credits</th><th>Group</th><th>Staff it</th><th>Variable credit</th><th>Active</th><th>Use</th><th></th></tr></thead><tbody>`;
+  state.courses.filter(c=>ui.showInactive||c.active).forEach(c=>{
+    const nA=state.assignments.filter(a=>a.courseId===c.id).length,hasNeed=Object.values(state.needs[c.id]||{}).some(v=>v>0);
+    h+=`<tr class="${c.active?'':'inactive'}"><td style="width:140px"><input type="text" class="cCode" data-id="${c.id}" value="${esc(c.code)}" aria-label="Code"></td>
+    <td><input type="text" class="cTitle" data-id="${c.id}" value="${esc(c.title)}" aria-label="Title">${c.note?`<div style="font-size:.74rem;color:var(--muted);padding:0 6px">${esc(c.note)}</div>`:''}</td>
+    <td class="n" style="width:80px"><input type="number" step="0.5" min="0" class="cCr" data-id="${c.id}" value="${c.credits}" style="text-align:right" aria-label="Credits"></td>
+    <td style="width:150px"><input type="text" list="cats" class="cCat" data-id="${c.id}" value="${esc(c.category||'')}" aria-label="Group"></td>
+    <td><input type="checkbox" class="cAssign" data-id="${c.id}"${c.assignable!==false?' checked':''} aria-label="Staff with an instructor"></td>
+    <td><input type="checkbox" class="cVar" data-id="${c.id}"${c.variable?' checked':''} aria-label="Variable credit"></td>
+    <td><input type="checkbox" class="cActive" data-id="${c.id}"${c.active?' checked':''} aria-label="Active"></td>
+    <td style="font-size:.78rem;color:var(--muted)">${nA?nA+' assignments':hasNeed?'Planned only':'Unused'}</td>
+    <td>${!nA&&!hasNeed?`<button class="btn small danger" data-act="delCourse" data-id="${c.id}">Delete</button>`:''}</td></tr>`;
+  });
+  h+=`</tbody></table></div>`;
+  document.getElementById('view').innerHTML=h;
+}
+
+function viewChecks(){
+  const y=ui.year,k=computeChecks(y);
+  const sec=(title,kind,items,row)=>items.length?`<section><h3>${title}<span class="pill ${kind}">${items.length}</span></h3><ul>${items.map(row).join('')}</ul></section>`:'';
+  const go=(attrs,label='Show')=>`<button class="linkbtn" data-act="goto" ${attrs}>${label}</button>`;
+  let h=`<h2>Checks for ${y}</h2><p class="lede">Problems first, then things worth a second look. The red count on the tab only includes problems.</p><div class="checks">`;
+  if(!k.problems)h+=`<p class="allclear">No problems. Every planned section is staffed and nothing points at an inactive course or person.</p>`;
+  h+=sec('Open sections','problem',k.open,x=>`<li><span><b>${esc(x.c.code)}</b>, ${termLabel(x.t)}: ${x.n} without an instructor</span>${go(`data-c="${x.c.id}"`)}</li>`);
+    h+=sec('More sections assigned than planned','problem',k.over,x=>`<li><span><b>${esc(x.c.code)}</b>, ${termLabel(x.t)}: ${x.n} extra (plan says ${x.planned})</span>${go(`data-c="${x.c.id}"`)}</li>`);
+  h+=sec('Inactive course or person still assigned','problem',k.inactive,x=>x.kind==='fac'?`<li><span><b>${esc(x.f.name)}</b> is marked inactive but has sections this year</span>${go(`data-f="${x.f.id}"`)}</li>`:`<li><span><b>${esc(x.c.code)}</b> is marked inactive but has sections this year</span>${go(`data-c="${x.c.id}"`)}</li>`);
+  h+=sec('In overload','info',k.overload,x=>`<li><span><b>${esc(x.f.name)}</b>: ${fmt(x.ld-x.con)} credit hours of overload (${fmt(x.ld)} assigned on a ${fmt(x.con)} contract)</span>${go(`data-f="${x.f.id}"`)}</li>`);
+  h+=sec('Under contract','info',k.under,x=>`<li><span><b>${esc(x.f.name)}</b>: ${fmt(x.ld)} of ${fmt(x.con)} assigned (${fmt(x.con-x.ld)} to go)</span>${go(`data-f="${x.f.id}"`)}</li>`);
+  h+=sec('Teaching with no contract entered','info',k.nocontract,x=>`<li><span><b>${esc(x.f.name)}</b>: ${fmt(x.ld)} credit hours assigned</span>${go(`data-tab="faculty"`,'Faculty tab')}</li>`);
+  h+=sec('Sections with custom credit hours','info',k.override,x=>`<li><span><b>${esc(x.c?.code)}</b>, ${termLabel(x.a.term)}, ${esc(x.f?.name)}: counted as ${fmt(x.a.credits)} instead of ${fmt(x.c?.credits)}</span>${go(`data-c="${x.c?.id}"`)}</li>`);
+  h+=`</div>`;
+  document.getElementById('view').innerHTML=h;
+}
+
+/* ---------- picker ---------- */
+function openPicker(anchor,ctx){
+  ui.picker={...ctx,q:'',inactive:false};
+  const p=document.getElementById('picker');p.hidden=false;renderPicker();
+  const r=anchor.getBoundingClientRect(),w=340,hgt=Math.min(430,p.offsetHeight||430);
+  let left=Math.min(window.innerWidth-w-10,Math.max(10,r.left));
+  let top=r.bottom+6;if(top+hgt>window.innerHeight-10)top=Math.max(10,r.top-hgt-6);
+  p.style.left=left+'px';p.style.top=top+'px';
+  p.querySelector('input[type=search]').focus();
+}
+function closePicker(){ui&&(ui.picker=null);const p=document.getElementById('picker');if(p)p.hidden=true}
+function pickerRows(){
+  const ctx=ui.picker,c=C(ctx.courseId),y=yearOf(ctx.term),cur=ctx.asgId?state.assignments.find(a=>a.id===ctx.asgId):null;
+  const add=cur?0:c.credits,q=ctx.q.trim().toLowerCase();
+  return state.faculty.filter(f=>(ctx.inactive||f.active||(cur&&cur.facultyId===f.id))&&(!q||f.name.toLowerCase().includes(q)))
+    .map(f=>{const ld=loadOf(f.id,y),con=contractOf(f,y);return{f,ld,con,taught:taughtCount(f.id,c.id,ctx.term),room:con==null?-999:con-ld,overAfter:con!=null&&ld+add>con,cur:cur&&cur.facultyId===f.id}})
+    .sort((a,b)=>(b.taught>0)-(a.taught>0)||b.room-a.room||a.f.name.localeCompare(b.f.name));
+}
+function renderPicker(){
+  const ctx=ui.picker,c=C(ctx.courseId),cur=ctx.asgId?state.assignments.find(a=>a.id===ctx.asgId):null;
+  const p=document.getElementById('picker');
+  const rows=pickerRows();
+  const old=p.querySelector('input[type=search]'),hadFocus=old&&document.activeElement===old;
+  p.innerHTML=`<header><b>${esc(c.code)}, ${termLabel(ctx.term)}</b><span>${cur?'Change or remove this instructor':'Choose an instructor'}. People who have taught it before are listed first.</span>
+    <input type="search" id="pq" placeholder="Search faculty" value="${esc(ctx.q)}" aria-label="Search faculty"></header>
+    <div class="plist">${rows.length?rows.map(r=>`<button class="pitem${r.cur?' current':''}" data-act="pick" data-id="${r.f.id}"><span>${esc(r.f.name)}${r.taught?`<span class="tag">Taught ${r.taught}x</span>`:''}</span><span class="ld${r.overAfter?' over':''}">${fmt(r.ld)}${r.con!=null?' / '+fmt(r.con):' cr'}</span></button>`).join(''):`<div class="pempty">No one matches. Add new people on the Faculty tab.</div>`}</div>
+    <footer><label><input type="checkbox" id="pInactive"${ctx.inactive?' checked':''}> Include inactive</label>
+    ${cur?`<label>Counts as <input type="number" id="pCr" step="0.5" min="0" value="${credit(cur)}" aria-label="Credit hours for this section"> cr</label><button class="btn small danger" data-act="removeAsg">Remove</button>`:(c.variable?`<label>Counts as <input type="number" id="pNewCr" step="0.5" min="0" value="${ctx.newCr??c.credits}" aria-label="Credit hours for this section"> cr</label>`:'')+`<button class="linkbtn" data-act="closePicker">Cancel</button>`}</footer>`;
+  if(hadFocus){const n=p.querySelector('#pq');n.focus();n.setSelectionRange(n.value.length,n.value.length)}
+}
+function pick(fid){
+  const ctx=ui.picker;
+  if(ctx.asgId)commit(s=>{const a=s.assignments.find(a=>a.id===ctx.asgId);if(a)a.facultyId=fid});
+  else{const c=C(ctx.courseId),cr=ctx.newCr;commit(s=>{const a={id:uid('a'),term:ctx.term,courseId:ctx.courseId,facultyId:fid};if(cr!=null&&cr!==c.credits)a.credits=cr;s.assignments.push(a)})}
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+  const p=document.getElementById('picker');
+  if(ui.picker&&!p.contains(e.target)&&!e.target.closest('[data-act=editAsg],[data-act=fillSlot],[data-act=addAsg]'))closePicker();
+  const tab=e.target.closest('[data-tab]');
+  if(tab&&!tab.dataset.act){ui.tab=tab.dataset.tab;persist();closePicker();render();window.scrollTo(0,0);return}
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const d=b.dataset,y=ui.year;
+  switch(d.act){
+    case 'prevYear':case 'nextYear':{const i=state.years.indexOf(y)+(d.act==='nextYear'?1:-1);if(i>=0&&i<state.years.length){ui.year=state.years[i];ui.focus=null;persist();render()}break}
+    case 'undo':undo();break;
+    case 'save':save();break;
+    case 'saveAs':save(true);break;
+    case 'open':openFile();break;
+    case 'export':exportXlsx();break;
+    case 'fillSlot':case 'addAsg':openPicker(b,{courseId:d.c,term:d.t});break;
+    case 'editAsg':{const a=state.assignments.find(a=>a.id===d.id);if(a)openPicker(b,{courseId:a.courseId,term:a.term,asgId:a.id});break}
+    case 'pick':pick(d.id);break;
+    case 'removeAsg':{const id=ui.picker.asgId;commit(s=>{s.assignments=s.assignments.filter(a=>a.id!==id)});toast('Section removed. Undo brings it back.');break}
+    case 'closePicker':closePicker();break;
+    case 'focusFac':ui.focus=ui.focus===d.id?null:d.id;render();break;
+    case 'clearFocus':ui.focus=null;render();break;
+    case 'addYear':{
+      const l=state.years[state.years.length-1],s=+l.slice(0,4)+1,ny=s+'-'+p2((s+1)%100);
+      commit(st=>{st.years.push(ny);st.faculty.forEach(f=>{if(f.active){const v=contractOf(f,l)??TRACK_DEFAULT[f.track];if(v!=null)(f.contracts??={})[ny]=v}})});
+      toast(`Added ${ny}. Contracts carried over from ${l}.`);break}
+    case 'copyYear':{
+      const i=state.years.indexOf(d.y),from=termsOf(state.years[i-1]),to=termsOf(d.y);let n=0;
+      commit(s=>{s.courses.forEach(c=>to.forEach((t,j)=>{const v=s.needs[c.id]?.[from[j]];if(v&&!s.needs[c.id]?.[t]){(s.needs[c.id]??={})[t]=v;n++}}))});
+      toast(n?`Filled ${n} blank cells in ${d.y}.`:`Nothing to fill. ${d.y} already has counts wherever ${state.years[i-1]} does.`);break}
+    case 'addFac':{
+      const name=document.getElementById('newFacName').value.trim(),track=document.getElementById('newFacTrack').value;
+      if(!name){toast('Enter a name first.');break}
+      if(state.faculty.some(f=>f.name.toLowerCase()===name.toLowerCase())){toast(name+' is already on the list.');break}
+      let id=slug(name)||uid('f');while(F(id))id+='x';
+      commit(s=>{const f={id,name,track,active:true,contracts:{}};if(TRACK_DEFAULT[track]!=null)f.contracts[y]=TRACK_DEFAULT[track];s.faculty.push(f)});
+      toast('Added '+name);break}
+    case 'toggleFac':commit(s=>{const f=s.faculty.find(f=>f.id===d.id);f.active=!f.active});break;
+    case 'delFac':{const f=F(d.id);if(confirm(`Delete ${f.name}? They have no sections in any year.`))commit(s=>{s.faculty=s.faculty.filter(x=>x.id!==d.id)});break}
+    case 'copySummary':copySummary(d.id);break;
+    case 'addCourse':{
+      const code=normCode(document.getElementById('newCode').value),title=document.getElementById('newTitle').value.trim(),cr=parseFloat(document.getElementById('newCr').value),cat=document.getElementById('newCat').value.trim();
+      if(!code){toast('Enter a course code first.');break}
+      if(state.courses.some(c=>c.code===code)){toast(code+' is already in the course list.');break}
+      if(!(cr>=0)){toast('Enter credit hours as a number.');break}
+      let id=slug(code);while(C(id))id+='x';
+      commit(s=>s.courses.push({id,code,title:title||code,credits:cr,category:cat||'Other',active:true,assignable:true}));
+      toast('Added '+code);break}
+    case 'delCourse':{const c=C(d.id);if(confirm(`Delete ${c.code}? It isn't planned or assigned anywhere.`))commit(s=>{s.courses=s.courses.filter(x=>x.id!==d.id);delete s.needs[d.id]});break}
+    case 'goto':{
+      if(d.tab){ui.tab=d.tab;render();break}
+      ui.tab='assign';ui.q='';ui.onlyOpen=false;ui.focus=d.f||null;render();
+      const el=d.c?document.getElementById('row-'+d.c):document.querySelector(`[data-act=focusFac][data-id="${d.f}"]`);
+      if(el){el.scrollIntoView({block:'center',behavior:'smooth'});if(d.c){el.classList.add('flash')}}
+      break}
+  }
+});
+document.getElementById('yearSel').addEventListener('change',e=>{ui.year=e.target.value;ui.focus=null;persist();closePicker();render()});
+document.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.id==='q'){ui.q=t.value;const pos=t.selectionStart;viewAssign();const n=document.getElementById('q');n.focus();n.setSelectionRange(pos,pos)}
+  if(t.id==='pq'){ui.picker.q=t.value;renderPicker()}
+});
+document.addEventListener('change',e=>{
+  const t=e.target,id=t.dataset.id,y=ui.year;
+  if(t.id==='onlyOpen'){ui.onlyOpen=t.checked;viewAssign();return}
+  if(t.id==='planPast'){ui.planPast=t.checked;viewPlan();return}
+  if(t.id==='showInactive'){ui.showInactive=t.checked;render();return}
+  if(t.id==='pInactive'){ui.picker.inactive=t.checked;renderPicker();return}
+  if(t.id==='pNewCr'){const v=parseFloat(t.value);if(v>=0)ui.picker.newCr=v;return}
+  if(t.id==='pCr'){const v=parseFloat(t.value),aid=ui.picker.asgId;if(!(v>=0)){toast('Enter credit hours as a number.');return}
+    commit(s=>{const a=s.assignments.find(a=>a.id===aid),c=s.courses.find(c=>c.id===a.courseId);if(v===c.credits)delete a.credits;else a.credits=v},{keepPicker:true});renderPicker();return}
+  if(t.classList.contains('needIn')){
+    const v=t.value===''?0:Math.max(0,Math.round(+t.value));
+    commit(s=>{s.needs[t.dataset.c]??={};if(v)s.needs[t.dataset.c][t.dataset.t]=v;else delete s.needs[t.dataset.c][t.dataset.t]});return}
+  if(t.classList.contains('facName')){
+    const v=t.value.trim();
+    if(!v){toast('Names cannot be blank.');render();return}
+    if(state.faculty.some(f=>f.id!==id&&f.name.toLowerCase()===v.toLowerCase())){toast(v+' is already on the list. Names need to be unique.');render();return}
+    commit(s=>{s.faculty.find(f=>f.id===id).name=v});return}
+  if(t.classList.contains('facTrack')){commit(s=>{const f=s.faculty.find(f=>f.id===id);f.track=t.value;if(contractOf(f,y)==null&&TRACK_DEFAULT[t.value]!=null)(f.contracts??={})[y]=TRACK_DEFAULT[t.value]});return}
+  if(t.classList.contains('facCon')){
+    const v=t.value.trim();if(v!==''&&!(+v>=0)){toast('Enter contract hours as a number.');render();return}
+    commit(s=>{const f=s.faculty.find(f=>f.id===id);f.contracts??={};if(v==='')delete f.contracts[y];else f.contracts[y]=+v});return}
+  if(t.classList.contains('cCode')){
+    const v=normCode(t.value);
+    if(!v){toast('Course codes cannot be blank.');render();return}
+    if(state.courses.some(c=>c.id!==id&&c.code===v)){toast(v+' is already in the course list.');render();return}
+    commit(s=>{s.courses.find(c=>c.id===id).code=v});return}
+  if(t.classList.contains('cTitle')){commit(s=>{s.courses.find(c=>c.id===id).title=t.value.trim()});return}
+  if(t.classList.contains('cCr')){const v=parseFloat(t.value);if(!(v>=0)){toast('Enter credit hours as a number.');render();return}commit(s=>{s.courses.find(c=>c.id===id).credits=v});return}
+  if(t.classList.contains('cCat')){commit(s=>{s.courses.find(c=>c.id===id).category=t.value.trim()||'Other'});return}
+  if(t.classList.contains('cAssign')){commit(s=>{s.courses.find(c=>c.id===id).assignable=t.checked});return}
+  if(t.classList.contains('cVar')){commit(s=>{s.courses.find(c=>c.id===id).variable=t.checked});return}
+  if(t.classList.contains('cActive')){commit(s=>{s.courses.find(c=>c.id===id).active=t.checked});return}
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&ui.picker){closePicker();return}
+  if(e.key==='Enter'&&e.target.id==='pq'){const first=document.querySelector('#picker .pitem');if(first)first.click();return}
+  if(e.key==='Enter'&&(e.target.id==='newFacName'))document.querySelector('[data-act=addFac]').click();
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'&&!/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)){e.preventDefault();undo()}
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();save()}
+});
+
+/* ---------- faculty summary + export ---------- */
+function copySummary(fid){
+  const f=F(fid),y=ui.year,T=termsOf(y),con=contractOf(f,y),ld=loadOf(fid,y);
+  const first=f.name.includes(',')?f.name.split(',')[1].trim()+' '+f.name.split(',')[0].trim():f.name;
+  const lines=[`${first}: teaching plan for ${y}`,''];
+  T.forEach(t=>{const cs=asgIn(y).filter(a=>a.facultyId===fid&&a.term===t).map(a=>C(a.courseId)?.code);lines.push(`${termLabel(t)}: ${cs.length?summarize(cs):'No courses'}`)});
+  lines.push('',`Total: ${fmt(ld)} credit hours${con!=null?` (contract: ${fmt(con)})`:''}`);
+  const txt=lines.join('\n');
+  (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('Copied a plain-text summary for '+first)).catch(()=>{prompt('Copy this summary:',txt)});
+}
+function exportXlsx(){
+  const y=ui.year,T=termsOf(y),m=cellMap(y);
+  const coverage=[['Course','Title','Credits',...T.flatMap(t=>[termLabel(t)+' planned',termLabel(t)+' staffed',termLabel(t)+' open',termLabel(t)+' instructors'])]];
+  visibleCourses(y).forEach(c=>coverage.push([c.code,c.title,c.credits,...T.flatMap(t=>{const l=m[c.id+'|'+t]||[],n=need(c.id,t);return[n,Math.min(n,l.length),Math.max(0,n-l.length),l.map(a=>F(a.facultyId)?.name).join('; ')]})]));
+  const loads=[['Name','Track','Contract','Assigned','Difference',...T.map(termLabel)]];
+  state.faculty.filter(f=>f.active||asgIn(y).some(a=>a.facultyId===f.id)).sort((a,b)=>a.name.localeCompare(b.name)).forEach(f=>{
+    const ld=loadOf(f.id,y),con=contractOf(f,y);
+    loads.push([f.name,TRACKS[f.track||''],con??'',ld,con==null?'':ld-con,...T.map(t=>summarize(asgIn(y).filter(a=>a.facultyId===f.id&&a.term===t).map(a=>C(a.courseId)?.code)))]);
+  });
+  const terms=state.years.flatMap(termsOf);
+  const plan=[['Course','Title','Credits','Group',...terms]];
+  state.courses.forEach(c=>plan.push([c.code,c.title,c.credits,c.category,...terms.map(t=>need(c.id,t)||'')]));
+  const all=[['Academic year','Term','Course','Title','Instructor','Credit hours']];
+  [...state.assignments].sort((a,b)=>terms.indexOf(a.term)-terms.indexOf(b.term)).forEach(a=>{const c=C(a.courseId);all.push([yearOf(a.term),termLabel(a.term),c?.code,c?.title,F(a.facultyId)?.name,credit(a)])});
+  if(!window.XLSX){
+    const csv=all.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='ACCTG_assignments.csv';a.click();
+    toast('Excel library did not load (offline?), so this exported a CSV of all assignments instead.',5000);return;
+  }
+  const wb=XLSX.utils.book_new();
+  const add=(rows,name,widths)=>{const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=widths.map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,ws,name)};
+  add(coverage,'Coverage '+y,[14,40,8,...T.flatMap(()=>[9,9,8,40])]);
+  add(loads,'Faculty load '+y,[24,14,10,10,11,32,32,32]);
+  add(plan,'Section plan',[14,40,8,14,...terms.map(()=>7)]);
+  add(all,'All assignments',[12,13,13,40,24,12]);
+  XLSX.writeFile(wb,`ACCTG_teaching_plan_${y}.xlsx`);
+}
+
+/* ---------- start ---------- */
+load();render();
+idbGet('handle').then(h=>{if(h&&h.name&&(!fileName||fileName===h.name)){fileHandle=h;fileName=h.name;renderStatus()}});
+</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+# Plan files hold faculty names, contracts, and assignments. Never commit them.
+*.json
+!package.json
+.DS_Store
